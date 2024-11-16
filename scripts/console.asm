@@ -8,7 +8,6 @@ section .text
     global _console_out
     global _console_space
     global _console_get
-    global _console_out
     global _exit
 
 _console_out:
