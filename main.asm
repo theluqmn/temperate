@@ -9,10 +9,11 @@ section .data
     text_celcius: db "Celsius: ", 0
     text_fahrenheit: db "Fahrenheit: ", 0
     text_error: db "Error: invalid unit", 0
+    text_degrees: db " degrees", 0
 
 section .bss
-    unit: resb 1
-    temp: resb 1
+    unit: resb 8
+    temperature: resb 8
 
 section .text
     global _start
@@ -38,38 +39,73 @@ section .text
         mov rax, enter_temp
         call _console_out
         call _console_get
-        mov [temp], rbx
+        mov [temperature], rbx
+        
+        mov al, [unit]
 
         ; convert to fahrenheit
-        mov rax, [unit]
-        cmp rax, [symbol_celcius]
-        jmp _fahrenheit
+        cmp al, 'c'
+        je fahrenheit
+
+        ; convert to celcius
+        cmp al, 'f'
+        je celcius
 
         ; invalid unit
         mov rax, text_error
         call _console_out
         call _console_space
+
         call _exit
 
-    _fahrenheit: ; converting to fahrenheit
-        mov rax, [temp]
-        mov rbx, 18
-        mul rbx
+        fahrenheit: ; converting to fahrenheit
+            ; calculation
+            mov rax, [temperature]
+            imul rax, 9
+            xor rdx, rdx
+            mov rbx, 5
+            div rbx
+            add rax, 32
 
-        mov rbx, 10
-        div rbx
+            push rax
 
-        add rax, 32
-        push rax
+            ; output
+            mov rax, text_fahrenheit
+            call _console_out
 
-        mov rax, text_fahrenheit
-        call _console_out
+            pop rax
+            call num_to_string
 
-        pop rax
-        call num_to_string
+            mov rax, rbx
+            call _console_out
+            mov rax, text_degrees
+            call _console_out
+            call _console_space
 
-        mov rax, rbx
-        call _console_out
-        call _console_space
-lets
-        call _exit
+            call _exit
+        
+        celcius:
+            ; calculation
+            mov rax, [temperature]
+            mov rbx, 9
+            imul rax, rbx
+            xor rdx, rdx
+            mov rbx, 5
+            div rbx
+            add rax, 32
+            push rax
+
+            ; output
+            mov rax, text_celcius
+            call _console_out
+
+            pop rax
+            call num_to_string
+
+            mov rax, rbx
+            call _console_out
+            mov rax, text_degrees
+            call _console_out
+            call _console_space
+
+            call _exit

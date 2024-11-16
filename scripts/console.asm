@@ -2,7 +2,7 @@ section .data
     newline: db 10
 
 section .bss
-    input: resb 16
+    input: resb 32
 
 section .text
     global _console_out
@@ -40,12 +40,15 @@ _console_space:
     ret ; end of subroutine
 
 _console_get:
+    mov rax, 0
+    mov [input], rax
     ; subroutine that fetches input
     mov rax, 0
     mov rdi, 0
     mov rsi, input ; rbx is where the input will be stored
     mov rdx, 256 ; 256 bytes allocation
     syscall
+    mov rbx, [input] ; move input to rbx
     ret ; end of subroutine
 
 _exit:
