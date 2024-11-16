@@ -22,6 +22,8 @@ section .text
     extern _console_get
     extern _exit
 
+    extern num_to_string
+
     _start:
         mov rax, greet
         call _console_out
@@ -30,13 +32,11 @@ section .text
         ; input unit and temperature
         mov rax, enter_unit
         call _console_out
-        call _console_space
         call _console_get
         mov [unit], rbx
 
         mov rax, enter_temp
         call _console_out
-        call _console_space
         call _console_get
         mov [temp], rbx
 
@@ -69,6 +69,8 @@ section .text
         call _console_out
 
         pop rax
+        call num_to_string
+
         call _console_out
         call _console_space
 
