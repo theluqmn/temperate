@@ -1,7 +1,7 @@
 section .data
     greet: db "Temperate - temperature converter", 0
-    enter_unit: db "Enter unit (c/f): ", 0
-    enter_temp: db "Enter temperature: ", 0
+    enter_unit: db "Enter current unit (c/f): ", 0
+    enter_temp: db "Enter current temperature: ", 0
 
     symbol_celcius: db "c", 0
     symbol_fahrenheit: db "f", 0
@@ -45,9 +45,6 @@ section .text
         cmp rax, [symbol_celcius]
         jmp _fahrenheit
 
-        ; convert to celcius
-        cmp rax, [symbol_fahrenheit]
-
         ; invalid unit
         mov rax, text_error
         call _console_out
@@ -57,8 +54,8 @@ section .text
     _fahrenheit: ; converting to fahrenheit
         mov rax, [temp]
         mov rbx, 18
-
         mul rbx
+
         mov rbx, 10
         div rbx
 
@@ -71,7 +68,8 @@ section .text
         pop rax
         call num_to_string
 
+        mov rax, rbx
         call _console_out
         call _console_space
-
+lets
         call _exit
