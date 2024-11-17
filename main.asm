@@ -24,6 +24,7 @@ section .text
     extern _exit
 
     extern num_to_string
+    extern string_to_num
 
     _start:
         mov rax, greet
@@ -39,8 +40,12 @@ section .text
         mov rax, enter_temp
         call _console_out
         call _console_get
+
+        ; Debug print
+        mov rax, rbx
+        call string_to_num
         mov [temperature], rbx
-        
+
         mov al, [unit]
 
         ; convert to fahrenheit
@@ -58,24 +63,27 @@ section .text
 
         call _exit
 
-        fahrenheit: ; converting to fahrenheit
-            ; calculation
-            mov rax, [temperature]
-            imul rax, 9
-            xor rdx, rdx
+        fahrenheit:
+            ; Get temperature value (already in rbx from string_to_num)
+            push rbx            ; save original temperature
+            mov rax, rbx        ; copy temperature to rax
+            mov rbx, 9         
+            mul rbx             ; temp * 9
             mov rbx, 5
-            div rbx
-            add rax, 32
+            push rdx            ; save high bits
+            xor rdx, rdx        ; clear rdx
+            div rbx             ; (temp * 9) / 5
+            add rax, 32         ; add 32
 
-            push rax
+            push rax            ; save result
 
-            ; output
             mov rax, text_fahrenheit
             call _console_out
 
             pop rax
+            mov rsi, rax
             call num_to_string
-
+            
             mov rax, rbx
             call _console_out
             mov rax, text_degrees
@@ -85,14 +93,15 @@ section .text
             call _exit
         
         celcius:
-            ; calculation
+            ; calculation (F - 32) * 5/9
             mov rax, [temperature]
-            mov rbx, 9
-            imul rax, rbx
-            xor rdx, rdx
+            sub rax, 32        ; subtract 32 first
             mov rbx, 5
-            div rbx
-            add rax, 32
+            mul rbx            ; multiply by 5
+            xor rdx, rdx
+            mov rbx, 9
+            div rbx            ; divide by 9
+
             push rax
 
             ; output
