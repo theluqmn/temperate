@@ -64,34 +64,36 @@ section .text
         call _exit
 
         fahrenheit:
-            ; Get temperature value (already in rbx from string_to_num)
-            push rbx            ; save original temperature
-            mov rax, rbx        ; copy temperature to rax
+            ; Convert string to number
+            mov rax, [temperature]    ; Load stored temperature
+            
+            ; Do the conversion math
             mov rbx, 9         
-            mul rbx             ; temp * 9
+            imul rbx                  ; temp * 9
             mov rbx, 5
-            push rdx            ; save high bits
-            xor rdx, rdx        ; clear rdx
-            div rbx             ; (temp * 9) / 5
-            add rax, 32         ; add 32
-
-            push rax            ; save result
-
+            cqo                       ; Sign extend RAX into RDX
+            idiv rbx                  ; Divide by 5
+            add rax, 32              ; Add 32
+            
+            ; Print "Fahrenheit: "
+            push rax                  ; Save our result
             mov rax, text_fahrenheit
             call _console_out
-
-            pop rax
-            mov rsi, rax
-            call num_to_string
+            pop rax                   ; Restore our result
             
-            mov rax, rbx
-            call _console_out
+            ; Convert result to string and print
+            push rax                  ; Save result again
+            call num_to_string        ; Convert to string
+            mov rax, rbx             ; Move string pointer to rax
+            call _console_out        ; Print the number
+            pop rax                  ; Clean up stack
+            
+            ; Print " degrees"
             mov rax, text_degrees
             call _console_out
             call _console_space
-
-            call _exit
-        
+            
+            call _exit        
         celcius:
             ; calculation (F - 32) * 5/9
             mov rax, [temperature]
