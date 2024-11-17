@@ -10,6 +10,7 @@ section .data
     text_fahrenheit: db "Fahrenheit: ", 0
     text_error: db "Error: invalid unit", 0
     text_degrees: db " degrees", 0
+    text_pass: db "pass", 0
 
 section .bss
     unit: resb 8
@@ -63,13 +64,25 @@ section .text
         call _exit
 
         fahrenheit:
-            mov rdi, [temperature]
+            mov rax, temperature
+            call string_to_num
+
+            mov rdi, rbx
             call celcius_to_fahrenheit
             
             call _exit
 
         celcius:
-            mov rdi, [temperature]
+            mov rax, temperature
+            call string_to_num
+            
+            mov rdi, rbx
             call fahrenheit_to_celcius
 
             call _exit
+        
+    _pass:
+        mov rax, text_pass
+        call _console_out
+        call _console_space
+        ret
