@@ -35,19 +35,19 @@ string_to_num:
     xor rax, rax            ; zero out our accumulator
     xor rbx, rbx            ; zero out our result register
 
-string_to_num_loop:
-    movzx rdx, byte [rsi]   ; load next character
-    test rdx, rdx           ; check for string end
-    jz string_to_num_done
-    
-    sub rdx, '0'            ; convert ASCII to number
-    lea rax, [rax*5]        ; multiply by 5
-    lea rax, [rax*2]        ; multiply by 2 (total *10)
-    add rax, rdx            ; add new digit
-    
-    inc rsi                 ; move to next character
-    jmp string_to_num_loop
+    string_to_num_loop:
+        movzx rdx, byte [rsi]   ; load next character
+        test rdx, rdx           ; check for string end
+        jz string_to_num_done
+        
+        sub rdx, '0'            ; convert ASCII to number
+        lea rax, [rax*5]        ; multiply by 5
+        lea rax, [rax*2]        ; multiply by 2 (total *10)
+        add rax, rdx            ; add new digit
+        
+        inc rsi                 ; move to next character
+        jmp string_to_num_loop
 
-string_to_num_done:
-    mov rbx, rax            ; store final result
-    ret
+    string_to_num_done:
+        mov rbx, rax            ; store final result
+        ret

@@ -40,15 +40,15 @@ _console_space:
     ret ; end of subroutine
 
 _console_get:
-    mov rax, 0
-    mov [input], rax
     ; subroutine that fetches input
+    xor rbx, rbx
     mov rax, 0
     mov rdi, 0
     mov rsi, input ; rbx is where the input will be stored
     mov rdx, 256 ; 256 bytes allocation
     syscall
-    mov rbx, [input] ; move input to rbx
+
+    mov rbx, [input]
     ret ; end of subroutine
 
 _exit:
