@@ -41,7 +41,6 @@ section .text
         call _console_out
         call _console_get
 
-        ; Debug print
         mov rax, rbx
         call string_to_num
         mov [temperature], rbx
